@@ -75,7 +75,6 @@
 
             <section class="section">
                 <div class="section-heading">
-                    <p class="section-kicker">Method</p>
                     <h2>Design</h2>
                     <p class="section-note">Two core figures for the routing design and training procedure.</p>
                 </div>
@@ -90,7 +89,7 @@
                         </figcaption>
                     </figure>
 
-                    <figure class="paper-figure">
+                    <figure class="paper-figure paper-figure-narrow">
                         <img src="data/paper_assets/training_obj.png" alt="Training objectives for DynaPatch.">
                         <figcaption>
                             <strong>Router Training Objectives.</strong> The routing module is jointly trained with diffusion
@@ -104,33 +103,16 @@
                 <div class="section-heading">
                     <p class="section-kicker">Analysis</p>
                     <h2>Results</h2>
-                    <p class="section-note">Quantitative and qualitative evidence for adaptive patch allocation.</p>
+                    <p class="section-note">Main quantitative comparison on VBench.</p>
                 </div>
 
-                <div class="figure-grid figure-grid-three">
-                    <figure class="paper-figure compact">
-                        <img src="data/paper_assets/timestep_reduction2.png" alt="Token reduction rate across denoising steps.">
-                        <figcaption>
-                            <strong>Adaptive Budget Over Time.</strong> The router naturally uses coarser patches at higher-noise
-                            timesteps and finer patches as denoising progresses.
-                        </figcaption>
-                    </figure>
-
-                    <figure class="paper-figure compact">
-                        <img src="data/paper_assets/sample_attention.png" alt="Regional attention maps used for guidance.">
-                        <figcaption>
-                            <strong>Attention-Aligned Routing.</strong> Regional attention maps guide the router toward semantically
-                            important regions.
-                        </figcaption>
-                    </figure>
-
-                    <figure class="paper-figure compact">
-                        <img src="data/paper_assets/loss_ratio.png" alt="Loss curve and patch selection ratios.">
-                        <figcaption>
-                            <strong>Stable Optimization.</strong> Training remains stable while maintaining the target token budget.
-                        </figcaption>
-                    </figure>
-                </div>
+                <figure class="paper-figure paper-figure-table">
+                    <img src="data/paper_assets/table1.png" alt="Table 1 comparing DynaPatch with other patchification and token pruning approaches on VBench.">
+                    <figcaption>
+                        <strong>Table 1.</strong> DynaPatch consistently provides a better quality-speed tradeoff than prior
+                        patchification and token pruning baselines across multiple token reduction rates.
+                    </figcaption>
+                </figure>
             </section>
 
             <section class="section">

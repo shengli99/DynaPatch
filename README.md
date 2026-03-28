@@ -1,4 +1,4 @@
-# DynaPatch Project Website
+# DynaPatch Project Page
 
 Pseudo code for DynaPatch is in the code folder.
 This code keeps the router logic but removes the Adobe internal model code. 

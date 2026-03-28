@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Content-Aware Dynamic Patchification for Efficient Video Diffusion</title>
+    <meta name="description" content="Project page for DynaPatch: Content-Aware Dynamic Patchification for Efficient Video Diffusion.">
+    <meta property="og:title" content="Content-Aware Dynamic Patchification for Efficient Video Diffusion">
+    <meta property="og:description" content="DynaPatch is a content-aware dynamic patchification framework for efficient video diffusion.">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="data/assets/css/styles.css">
+</head>
+<body>
+    <div class="page-shell">
+        <header class="hero section">
+            <p class="eyebrow">Project Website</p>
+            <h1>Content-Aware Dynamic Patchification for Efficient Video Diffusion</h1>
+            <p class="hero-copy">
+                DynaPatch learns content-aware spatiotemporal patch sizes directly from video latents,
+                reducing redundant computation while preserving fidelity and temporal coherence.
+            </p>
+
+            <div class="hero-actions">
+                <a class="button button-primary" href="data/DynaPatch_paper.pdf">Paper PDF</a>
+            </div>
+
+            <div class="authors">
+                <span>Sheng Li<sup>1,*</sup></span>
+                <span>Connelly Barnes<sup>2</sup></span>
+                <span>Mamshad Nayeem Rizve<sup>3</sup></span>
+                <span>Hongwu Peng<sup>2</sup></span>
+                <span>Zhengang Li<sup>3</sup></span>
+                <span>Ohi Dibua<sup>2</sup></span>
+                <span>Alireza Ganjdanesh<sup>3</sup></span>
+                <span>Xulong Tang<sup>1</sup></span>
+                <span>Yan Kang<sup>2</sup></span>
+                <span>Yifan Gong<sup>2</sup></span>
+            </div>
+
+            <div class="affiliations">
+                <span><sup>1</sup> University of Pittsburgh</span>
+                <span><sup>2</sup> Adobe Research</span>
+                <span><sup>3</sup> Adobe</span>
+            </div>
+
+            <p class="footnote">* Work done while interning at Adobe.</p>
+        </header>
+
+        <main>
+            <section class="section">
+                <div class="section-heading">
+                    <h2>Abstract</h2>
+                </div>
+                <p class="body-copy">
+                    Diffusion Transformers (DiTs) achieve strong video generation performance but suffer from
+                    prohibitive computation cost due to dense spatiotemporal tokenization. Most existing works
+                    rely on uniform patchification, tokenizing non-overlapping spatiotemporal regions with a fixed
+                    patch size regardless of the underlying content. This content-agnostic tokenization results in
+                    substantial redundant computation, especially in visually simple or static areas. To address
+                    this inefficiency while preserving video generation quality, we propose DynaPatch, a fine-grained
+                    dynamic patchification framework that adaptively selects patch sizes for each spatiotemporal region
+                    based on content complexity. A lightweight router predicts patch sizes directly from the latents
+                    encoded by a 3D Variational Autoencoder (VAE), and is jointly optimized with the diffusion model
+                    through diffusion loss, an attention-guided saliency alignment loss, and a token-budget regularizer.
+                    Learnable patchify and unpatchify layers integrate seamlessly with standard DiT backbones, allowing
+                    flexible tokenization without architectural changes. Experiments demonstrate that DynaPatch can
+                    effectively reduce redundant computations while preserving fine details, achieving 1.3-1.8x
+                    acceleration with minimal quality degradation.
+                </p>
+            </section>
+
+            <section class="section">
+                <div class="section-heading">
+                    <p class="section-kicker">Method</p>
+                    <h2>Design</h2>
+                    <p class="section-note">Two core figures for the routing design and training procedure.</p>
+                </div>
+
+                <div class="figure-stack">
+                    <figure class="paper-figure">
+                        <img src="data/paper_assets/overview.png" alt="Overview of the DynaPatch inference workflow.">
+                        <figcaption>
+                            <strong>Overall Workflow.</strong> The router predicts region-wise patch sizes from VAE latents,
+                            patchify layers tokenize each region at the selected granularity, and unpatchify layers restore
+                            the latent grid after DiT processing.
+                        </figcaption>
+                    </figure>
+
+                    <figure class="paper-figure">
+                        <img src="data/paper_assets/training_obj.png" alt="Training objectives for DynaPatch.">
+                        <figcaption>
+                            <strong>Router Training Objectives.</strong> The routing module is jointly trained with diffusion
+                            loss, attention-guided supervision, and a token-budget regularizer.
+                        </figcaption>
+                    </figure>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-heading">
+                    <p class="section-kicker">Analysis</p>
+                    <h2>Results</h2>
+                    <p class="section-note">Quantitative and qualitative evidence for adaptive patch allocation.</p>
+                </div>
+
+                <div class="figure-grid figure-grid-three">
+                    <figure class="paper-figure compact">
+                        <img src="data/paper_assets/timestep_reduction2.png" alt="Token reduction rate across denoising steps.">
+                        <figcaption>
+                            <strong>Adaptive Budget Over Time.</strong> The router naturally uses coarser patches at higher-noise
+                            timesteps and finer patches as denoising progresses.
+                        </figcaption>
+                    </figure>
+
+                    <figure class="paper-figure compact">
+                        <img src="data/paper_assets/sample_attention.png" alt="Regional attention maps used for guidance.">
+                        <figcaption>
+                            <strong>Attention-Aligned Routing.</strong> Regional attention maps guide the router toward semantically
+                            important regions.
+                        </figcaption>
+                    </figure>
+
+                    <figure class="paper-figure compact">
+                        <img src="data/paper_assets/loss_ratio.png" alt="Loss curve and patch selection ratios.">
+                        <figcaption>
+                            <strong>Stable Optimization.</strong> Training remains stable while maintaining the target token budget.
+                        </figcaption>
+                    </figure>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-heading">
+                    <p class="section-kicker">Qualitative Study</p>
+                    <h2>Visualization</h2>
+                    <p class="section-note">All visualization figures are kept on this single page.</p>
+                </div>
+
+                <figure class="paper-figure paper-figure-wide">
+                    <img src="data/paper_assets/visualization_main.png" alt="Main visualization results for DynaPatch.">
+                    <figcaption>
+                        <strong>Main Visualization.</strong> DynaPatch preserves visual quality while adaptively assigning
+                        fine patches to important or dynamic regions and coarser patches to redundant content.
+                    </figcaption>
+                </figure>
+
+                <div class="figure-stack">
+                    <figure class="paper-figure">
+                        <img src="data/paper_assets/visualization_supp_1.png" alt="Supplementary visualization results page one.">
+                        <figcaption>
+                            <strong>Supplementary Visualization I.</strong> Additional examples comparing baseline generation
+                            and DynaPatch routing behavior.
+                        </figcaption>
+                    </figure>
+
+                    <figure class="paper-figure">
+                        <img src="data/paper_assets/visualization_supp_2.png" alt="Supplementary visualization results page two.">
+                        <figcaption>
+                            <strong>Supplementary Visualization II.</strong> More generated samples and corresponding
+                            patchification maps.
+                        </figcaption>
+                    </figure>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-heading">
+                    <p class="section-kicker">Template Area</p>
+                    <h2>Video Results</h2>
+                    <p class="section-note">I left prompt fields and video slots here so you can add your own videos later.</p>
+                </div>
+
+                <div class="template-note">
+                    Suggested workflow: put your videos under <code>supplementary_material/data/videos/</code>, then replace each
+                    placeholder block below with a <code>&lt;video&gt;</code> tag and fill in the corresponding prompt text.
+                </div>
+
+                <div class="video-grid">
+                    <article class="video-card">
+                        <div class="slot-header">
+                            <span class="slot-tag">Video 01</span>
+                            <span class="slot-type">Result</span>
+                        </div>
+                        <div class="video-placeholder">Add your video here</div>
+                        <p class="prompt-label">Prompt</p>
+                        <p class="prompt-placeholder">[Add prompt here]</p>
+                    </article>
+
+                    <article class="video-card">
+                        <div class="slot-header">
+                            <span class="slot-tag">Video 02</span>
+                            <span class="slot-type">Result</span>
+                        </div>
+                        <div class="video-placeholder">Add your video here</div>
+                        <p class="prompt-label">Prompt</p>
+                        <p class="prompt-placeholder">[Add prompt here]</p>
+                    </article>
+
+                    <article class="video-card">
+                        <div class="slot-header">
+                            <span class="slot-tag">Video 03</span>
+                            <span class="slot-type">Result</span>
+                        </div>
+                        <div class="video-placeholder">Add your video here</div>
+                        <p class="prompt-label">Prompt</p>
+                        <p class="prompt-placeholder">[Add prompt here]</p>
+                    </article>
+
+                    <article class="video-card">
+                        <div class="slot-header">
+                            <span class="slot-tag">Video 04</span>
+                            <span class="slot-type">Result</span>
+                        </div>
+                        <div class="video-placeholder">Add your video here</div>
+                        <p class="prompt-label">Prompt</p>
+                        <p class="prompt-placeholder">[Add prompt here]</p>
+                    </article>
+
+                    <article class="video-card">
+                        <div class="slot-header">
+                            <span class="slot-tag">Video 05</span>
+                            <span class="slot-type">Visualization</span>
+                        </div>
+                        <div class="video-placeholder">Add your video here</div>
+                        <p class="prompt-label">Prompt</p>
+                        <p class="prompt-placeholder">[Add prompt here]</p>
+                    </article>
+
+                    <article class="video-card">
+                        <div class="slot-header">
+                            <span class="slot-tag">Video 06</span>
+                            <span class="slot-type">Visualization</span>
+                        </div>
+                        <div class="video-placeholder">Add your video here</div>
+                        <p class="prompt-label">Prompt</p>
+                        <p class="prompt-placeholder">[Add prompt here]</p>
+                    </article>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

@@ -16,12 +16,12 @@
 <body>
     <div class="page-shell">
         <header class="hero section">
-            <p class="eyebrow">Project Website</p>
+            <!-- <p class="eyebrow">Project Website</p> -->
             <h1>Content-Aware Dynamic Patchification for Efficient Video Diffusion</h1>
-            <p class="hero-copy">
+            <!-- <p class="hero-copy">
                 DynaPatch learns content-aware spatiotemporal patch sizes directly from video latents,
                 reducing redundant computation while preserving fidelity and temporal coherence.
-            </p>
+            </p> -->
 
             <div class="hero-actions">
                 <a class="button button-primary" href="data/DynaPatch_paper.pdf">Paper PDF</a>
@@ -61,9 +61,9 @@
                     rely on uniform patchification, tokenizing non-overlapping spatiotemporal regions with a fixed
                     patch size regardless of the underlying content. This content-agnostic tokenization results in
                     substantial redundant computation, especially in visually simple or static areas. To address
-                    this inefficiency while preserving video generation quality, we propose DynaPatch, a fine-grained
+                    this inefficiency while preserving video generation quality, we propose <strong>DynaPatch, a fine-grained
                     dynamic patchification framework that adaptively selects patch sizes for each spatiotemporal region
-                    based on content complexity. A lightweight router predicts patch sizes directly from the latents
+                    based on content complexity.</strong> A lightweight router predicts patch sizes directly from the latents
                     encoded by a 3D Variational Autoencoder (VAE), and is jointly optimized with the diffusion model
                     through diffusion loss, an attention-guided saliency alignment loss, and a token-budget regularizer.
                     Learnable patchify and unpatchify layers integrate seamlessly with standard DiT backbones, allowing
@@ -76,50 +76,125 @@
             <section class="section">
                 <div class="section-heading">
                     <h2>Design</h2>
-                    <p class="section-note">Two core figures for the routing design and training procedure.</p>
                 </div>
 
-                <div class="figure-stack">
+                <div class="subsection-block">
+                    <div class="subsection-heading">
+                        <h3>Overall Workflow</h3>
+                    </div>
+                    <div class="subsection-copy">
+                        <ol class="workflow-list">
+                            <li><strong>Encode the video into spatiotemporal latents.</strong> The 3D VAE encoder produces the latent representation that serves as the routing input.</li>
+                            <li><strong>Predict a region-wise patch-size map.</strong> A lightweight router process the noisy latent and selects patch sizes for different spatiotemporal regions based on content complexity.</li>
+                            <li><strong>Patchify adaptively and run DiT denoising.</strong> Patchify layers convert each region into tokens at the selected granularity, and the resulting tokens are processed by standard DiT blocks.</li>
+                            <li><strong>Unpatchify and decode the final video.</strong> Unpatchify layers restore the latent grid to its original resolution before the 3D VAE decoder reconstructs the output video.</li>
+                        </ol>
+                        <p>This workflow preserves the original DiT backbone while allocating more computation to important or dynamic regions and fewer tokens to redundant areas.</p>
+                    </div>
                     <figure class="paper-figure">
                         <img src="data/paper_assets/overview.png" alt="Overview of the DynaPatch inference workflow.">
-                        <figcaption>
-                            <strong>Overall Workflow.</strong> The router predicts region-wise patch sizes from VAE latents,
-                            patchify layers tokenize each region at the selected granularity, and unpatchify layers restore
-                            the latent grid after DiT processing.
-                        </figcaption>
                     </figure>
+                </div>
 
-                    <figure class="paper-figure paper-figure-narrow">
-                        <img src="data/paper_assets/training_obj.png" alt="Training objectives for DynaPatch.">
-                        <figcaption>
-                            <strong>Router Training Objectives.</strong> The routing module is jointly trained with diffusion
-                            loss, attention-guided supervision, and a token-budget regularizer.
-                        </figcaption>
-                    </figure>
+                <div class="subsection-block">
+                    <div class="subsection-heading">
+                        <h3>Training the Router</h3>
+                    </div>
+                    <div class="subsection-layout">
+                        <div class="subsection-copy">
+                            <ol class="training-points">
+                                <li class="training-point">
+                                    <span class="training-index">1</span>
+                                    <div>
+                                        <strong>Diffusion loss</strong>
+                                        <p>Jointly trains the router with the DiT backbone so routing decisions remain compatible with high-quality denoising.</p>
+                                    </div>
+                                </li>
+                                <li class="training-point">
+                                    <span class="training-index">2</span>
+                                    <div>
+                                        <strong>Attention guidance</strong>
+                                        <p>Aligns fine patch assignments with semantically important regions indicated by the model's attention maps.</p>
+                                    </div>
+                                </li>
+                                <li class="training-point">
+                                    <span class="training-index">3</span>
+                                    <div>
+                                        <strong>Token-budget loss</strong>
+                                        <p>Regularizes the routed token count toward a target compute budget instead of collapsing to all-fine patches.</p>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                        <figure class="paper-figure paper-figure-aside">
+                            <img src="data/paper_assets/training_obj.png" alt="Training objectives for DynaPatch.">
+                        </figure>
+                    </div>
                 </div>
             </section>
 
             <section class="section">
                 <div class="section-heading">
-                    <p class="section-kicker">Analysis</p>
+                    <!-- <p class="section-kicker">Analysis</p> -->
                     <h2>Results</h2>
-                    <p class="section-note">Main quantitative comparison on VBench.</p>
+                    <!-- <p class="section-note">Main quantitative comparison on VBench.</p> -->
                 </div>
 
-                <figure class="paper-figure paper-figure-table">
-                    <img src="data/paper_assets/table1.png" alt="Table 1 comparing DynaPatch with other patchification and token pruning approaches on VBench.">
-                    <figcaption>
-                        <strong>Table 1.</strong> DynaPatch consistently provides a better quality-speed tradeoff than prior
-                        patchification and token pruning baselines across multiple token reduction rates.
-                    </figcaption>
-                </figure>
+                <div class="results-table-wrap">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Token Reduction</th>
+                                <th>Method</th>
+                                <th>Total Score</th>
+                                <th>Quality Score</th>
+                                <th>Semantic Score</th>
+                                <th>Speedup</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="baseline-row">
+                                <td>0%</td>
+                                <td>Baseline</td>
+                                <td>83.61</td>
+                                <td>84.87</td>
+                                <td>78.59</td>
+                                <td>1.0x</td>
+                            </tr>
+                            <tr class="ours-row">
+                                <td>20%</td>
+                                <td>DynaPatch</td>
+                                <td>83.56</td>
+                                <td>84.79</td>
+                                <td>78.62</td>
+                                <td>1.3x</td>
+                            </tr>
+                            <tr class="ours-row">
+                                <td>30%</td>
+                                <td>DynaPatch</td>
+                                <td>83.42</td>
+                                <td>84.68</td>
+                                <td>78.36</td>
+                                <td>1.5x</td>
+                            </tr>
+                            <tr class="ours-row">
+                                <td>40%</td>
+                                <td>DynaPatch</td>
+                                <td>82.19</td>
+                                <td>83.92</td>
+                                <td>75.29</td>
+                                <td>1.8x</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="results-note">Comparison with baseline on VBench. DynaPatch maintains competitive scores while reducing tokens and improving inference speed.</p>
+                </div>
             </section>
 
             <section class="section">
                 <div class="section-heading">
-                    <p class="section-kicker">Qualitative Study</p>
+                    <!-- <p class="section-kicker">Qualitative Study</p> -->
                     <h2>Visualization</h2>
-                    <p class="section-note">All visualization figures are kept on this single page.</p>
                 </div>
 
                 <figure class="paper-figure paper-figure-wide">
@@ -130,7 +205,7 @@
                     </figcaption>
                 </figure>
 
-                <div class="figure-stack">
+                <!-- <div class="figure-stack">
                     <figure class="paper-figure">
                         <img src="data/paper_assets/visualization_supp_1.png" alt="Supplementary visualization results page one.">
                         <figcaption>
@@ -147,12 +222,12 @@
                         </figcaption>
                     </figure>
                 </div>
-            </section>
+            </section> -->
 
             <section class="section">
                 <div class="section-heading">
-                    <p class="section-kicker">Template Area</p>
-                    <h2>Video Results</h2>
+                    <!-- <p class="section-kicker">Template Area</p> -->
+                    <h2>Generated Video</h2>
                     <p class="section-note">I left prompt fields and video slots here so you can add your own videos later.</p>
                 </div>
 

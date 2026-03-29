@@ -123,7 +123,7 @@ strong {
 h1 {
     max-width: 980px;
     margin: 0;
-    font-size: clamp(2.2rem, 5vw, 4.2rem);
+    font-size: clamp(1.80rem, 4.20vw, 3.50rem);
     line-height: 1.03;
     letter-spacing: -0.04em;
 }
@@ -250,7 +250,7 @@ figcaption,
 }
 
 .figure-grid-three {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .figure-stack {
@@ -464,7 +464,7 @@ figcaption {
 
 .video-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
 }
 
@@ -473,6 +473,17 @@ figcaption {
     border: 1px solid var(--line);
     border-radius: var(--radius-md);
     background: #ffffff;
+}
+
+.video-card .video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    border-radius: 14px;
+    background: #0b1220;
+    object-fit: contain;
+    overflow: hidden;
 }
 
 .slot-header {
@@ -528,6 +539,9 @@ figcaption {
     border-radius: var(--radius-sm);
     background: rgba(19, 32, 51, 0.05);
     color: #677387;
+    line-height: 1.60;
+    max-height: calc(1.60em * 2 + 28px);
+    overflow-y: auto;
 }
 
 @media (max-width: 1024px) {
